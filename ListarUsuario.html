@@ -4,166 +4,135 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Listar Usuarios</title>
-
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
+    body { font-family: Arial; padding: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-    th { background-color: #f4f4f4; }
+    th, td { padding: 10px; border-bottom: 1px solid #ccc; }
+    th { background: #f0f0f0; }
+
     .acciones button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      margin-right: 10px;
+      background: none; border: none; cursor: pointer;
+      font-size: 18px; margin-right: 10px;
     }
-    .form-box {
-      margin-top: 30px;
+
+    #formulario {
+      margin-top: 20px;
       padding: 15px;
-      border: 1px solid #ccc;
+      border: 1px solid #aaa;
       width: 300px;
       display: none;
-      background: #fafafa;
     }
-    .form-box input {
+
+    #formulario input {
       width: 100%;
       padding: 8px;
-      margin-top: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .form-box button {
-      padding: 8px 14px;
+
+    #nuevoUsuarioBtn {
+      margin-top: 20px;
+      padding: 10px 15px;
       cursor: pointer;
+      background: #4caf50;
+      border: none;
+      color: white;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html">← Volver</a>
-  <h1>Lista de Usuarios</h1>
+<h1>Lista de Usuarios</h1>
 
-  <table id="tablaUsuarios">
-    <thead>
+<button id="nuevoUsuarioBtn">➕ Agregar Amigo</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="tablaUsuarios">
+  </tbody>
+</table>
+
+<!-- FORMULARIO EDITAR / AGREGAR -->
+<div id="formulario">
+  <h3 id="formTitulo">Editar Usuario</h3>
+  <input type="text" id="nombre" placeholder="Nombre">
+  <input type="email" id="email" placeholder="Email">
+  <input type="text" id="telefono" placeholder="Teléfono">
+  <button onclick="guardarCambios()">Guardar</button>
+</div>
+
+<script>
+let usuarios = [
+  { nombre: "Lucho Fernández", email: "lucho@example.com", telefono: "+54 11 5555-1111" },
+  { nombre: "Joaco Martínez", email: "joaco@example.com", telefono: "+54 11 4444-2222" },
+  { nombre: "Juan Pérez", email: "juanperez@example.com", telefono: "+54 11 1234-5678" },
+];
+
+let editando = -1; // índice del usuario que se está editando
+
+// Mostrar usuarios en la tabla
+function render() {
+  const tabla = document.getElementById("tablaUsuarios");
+  tabla.innerHTML = "";
+
+  usuarios.forEach((u, i) => {
+    tabla.innerHTML += `
       <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Usuarios inventados y los que pediste -->
-      <tr>
-        <td>Lucho</td>
-        <td>lucho.amigos@example.com</td>
-        <td>+54 11 6500-1234</td>
+        <td>${u.nombre}</td>
+        <td>${u.email}</td>
+        <td>${u.telefono}</td>
         <td class="acciones">
-          <button onclick="editarUsuario(this)">✏️</button>
+          <button onclick="editar(${i})">✏️</button>
           <button onclick="agregarAmigo()">➕</button>
         </td>
       </tr>
+    `;
+  });
+}
 
-      <tr>
-        <td>Joaco</td>
-        <td>joaco.best@example.com</td>
-        <td>+54 11 7700-9876</td>
-        <td class="acciones">
-          <button onclick="editarUsuario(this)">✏️</button>
-          <button onclick="agregarAmigo()">➕</button>
-        </td>
-      </tr>
+function editar(i) {
+  editando = i;
+  document.getElementById("formTitulo").innerText = "Editar Usuario";
+  document.getElementById("nombre").value = usuarios[i].nombre;
+  document.getElementById("email").value = usuarios[i].email;
+  document.getElementById("telefono").value = usuarios[i].telefono;
+  document.getElementById("formulario").style.display = "block";
+}
 
-      <tr>
-        <td>María Gómez</td>
-        <td>maria.gomez@example.com</td>
-        <td>+54 351 555-7788</td>
-        <td class="acciones">
-          <button onclick="editarUsuario(this)">✏️</button>
-          <button onclick="agregarAmigo()">➕</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+function agregarAmigo() {
+  editando = -1;
+  document.getElementById("formTitulo").innerText = "Agregar Amigo";
+  document.getElementById("nombre").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("telefono").value = "";
+  document.getElementById("formulario").style.display = "block";
+}
 
-  <!-- FORM PARA EDITAR -->
-  <div class="form-box" id="formEditar">
-    <h3>Editar Usuario</h3>
-    <input type="text" id="editNombre" placeholder="Nombre">
-    <input type="text" id="editEmail" placeholder="Email">
-    <input type="text" id="editTelefono" placeholder="Teléfono">
-    <button onclick="guardarCambios()">Guardar</button>
-  </div>
+function guardarCambios() {
+  let nombre = document.getElementById("nombre").value;
+  let email = document.getElementById("email").value;
+  let telefono = document.getElementById("telefono").value;
 
-  <!-- FORM PARA AGREGAR AMIGO -->
-  <div class="form-box" id="formAgregar">
-    <h3>Agregar Amigo</h3>
-    <input type="text" id="addNombre" placeholder="Nombre">
-    <input type="text" id="addEmail" placeholder="Email">
-    <input type="text" id="addTelefono" placeholder="Teléfono">
-    <button onclick="agregarNuevo()">Agregar</button>
-  </div>
+  if (editando === -1) {
+    usuarios.push({ nombre, email, telefono });  // agregar nuevo
+  } else {
+    usuarios[editando] = { nombre, email, telefono }; // editar existente
+  }
 
-  <script>
-    let filaEditando = null;
+  document.getElementById("formulario").style.display = "none";
+  render();
+}
 
-    function editarUsuario(boton) {
-      const fila = boton.parentNode.parentNode;
-      filaEditando = fila;
-
-      document.getElementById("editNombre").value = fila.children[0].textContent;
-      document.getElementById("editEmail").value = fila.children[1].textContent;
-      document.getElementById("editTelefono").value = fila.children[2].textContent;
-
-      document.getElementById("formEditar").style.display = "block";
-      document.getElementById("formAgregar").style.display = "none";
-    }
-
-    function guardarCambios() {
-      if (filaEditando) {
-        filaEditando.children[0].textContent = document.getElementById("editNombre").value;
-        filaEditando.children[1].textContent = document.getElementById("editEmail").value;
-        filaEditando.children[2].textContent = document.getElementById("editTelefono").value;
-
-        filaEditando = null;
-        document.getElementById("formEditar").style.display = "none";
-      }
-    }
-
-    function agregarAmigo() {
-      document.getElementById("formAgregar").style.display = "block";
-      document.getElementById("formEditar").style.display = "none";
-    }
-
-    function agregarNuevo() {
-      const nombre = document.getElementById("addNombre").value;
-      const email = document.getElementById("addEmail").value;
-      const tel = document.getElementById("addTelefono").value;
-
-      if (nombre.trim() === "" || email.trim() === "" || tel.trim() === "") {
-        alert("Completa todos los campos.");
-        return;
-      }
-
-      const tabla = document.getElementById("tablaUsuarios").querySelector("tbody");
-
-      const nuevaFila = `
-        <tr>
-          <td>${nombre}</td>
-          <td>${email}</td>
-          <td>${tel}</td>
-          <td class="acciones">
-            <button onclick="editarUsuario(this)">✏️</button>
-            <button onclick="agregarAmigo()">➕</button>
-          </td>
-        </tr>
-      `;
-
-      tabla.insertAdjacentHTML("beforeend", nuevaFila);
-
-      document.getElementById("formAgregar").reset;
-      document.getElementById("formAgregar").style.display = "none";
-    }
-  </script>
+// Inicializar tabla
+render();
+</script>
 
 </body>
 </html>
