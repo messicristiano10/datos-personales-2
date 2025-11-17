@@ -4,28 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Listar Usuarios</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f4f4f4;
-    }
-
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background-color: #f4f4f4; }
     .acciones button {
       background: none;
       border: none;
@@ -33,37 +17,23 @@
       font-size: 18px;
       margin-right: 10px;
     }
-
-    .acciones button:hover {
-      opacity: 0.7;
-    }
-
-    #formulario {
+    .form-box {
       margin-top: 30px;
-      border: 1px solid #ddd;
-      padding: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
       width: 300px;
       display: none;
+      background: #fafafa;
     }
-
-    #formulario input {
+    .form-box input {
       width: 100%;
       padding: 8px;
-      margin: 6px 0;
+      margin-top: 8px;
+      margin-bottom: 12px;
     }
-
-    #formulario button {
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      border: none;
-      color: white;
+    .form-box button {
+      padding: 8px 14px;
       cursor: pointer;
-      font-size: 16px;
-    }
-
-    #formulario button:hover {
-      background: #0056b3;
     }
   </style>
 </head>
@@ -82,10 +52,21 @@
       </tr>
     </thead>
     <tbody>
+      <!-- Usuarios inventados y los que pediste -->
       <tr>
-        <td>Juan Pérez</td>
-        <td>juanperez@example.com</td>
-        <td>+54 11 1234-5678</td>
+        <td>Lucho</td>
+        <td>lucho.amigos@example.com</td>
+        <td>+54 11 6500-1234</td>
+        <td class="acciones">
+          <button onclick="editarUsuario(this)">✏️</button>
+          <button onclick="agregarAmigo()">➕</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Joaco</td>
+        <td>joaco.best@example.com</td>
+        <td>+54 11 7700-9876</td>
         <td class="acciones">
           <button onclick="editarUsuario(this)">✏️</button>
           <button onclick="agregarAmigo()">➕</button>
@@ -95,16 +76,6 @@
       <tr>
         <td>María Gómez</td>
         <td>maria.gomez@example.com</td>
-        <td>+54 11 9876-5432</td>
-        <td class="acciones">
-          <button onclick="editarUsuario(this)">✏️</button>
-          <button onclick="agregarAmigo()">➕</button>
-        </td>
-      </tr>
-
-      <tr>
-        <td>Carlos Rodríguez</td>
-        <td>carlos.rdz@example.com</td>
         <td>+54 351 555-7788</td>
         <td class="acciones">
           <button onclick="editarUsuario(this)">✏️</button>
@@ -114,76 +85,83 @@
     </tbody>
   </table>
 
-  <!-- FORMULARIO -->
-  <div id="formulario">
-    <h3 id="tituloForm">Editar Usuario</h3>
+  <!-- FORM PARA EDITAR -->
+  <div class="form-box" id="formEditar">
+    <h3>Editar Usuario</h3>
+    <input type="text" id="editNombre" placeholder="Nombre">
+    <input type="text" id="editEmail" placeholder="Email">
+    <input type="text" id="editTelefono" placeholder="Teléfono">
+    <button onclick="guardarCambios()">Guardar</button>
+  </div>
 
-    <input type="text" id="nombre" placeholder="Nombre">
-    <input type="email" id="email" placeholder="Email">
-    <input type="text" id="telefono" placeholder="Teléfono">
-
-    <button onclick="guardar()">Guardar</button>
+  <!-- FORM PARA AGREGAR AMIGO -->
+  <div class="form-box" id="formAgregar">
+    <h3>Agregar Amigo</h3>
+    <input type="text" id="addNombre" placeholder="Nombre">
+    <input type="text" id="addEmail" placeholder="Email">
+    <input type="text" id="addTelefono" placeholder="Teléfono">
+    <button onclick="agregarNuevo()">Agregar</button>
   </div>
 
   <script>
-    let filaActual = null;
-    let modo = "editar"; // o "agregar"
+    let filaEditando = null;
 
     function editarUsuario(boton) {
-      filaActual = boton.closest("tr");
-      modo = "editar";
+      const fila = boton.parentNode.parentNode;
+      filaEditando = fila;
 
-      document.getElementById("tituloForm").innerText = "Editar Usuario";
+      document.getElementById("editNombre").value = fila.children[0].textContent;
+      document.getElementById("editEmail").value = fila.children[1].textContent;
+      document.getElementById("editTelefono").value = fila.children[2].textContent;
 
-      document.getElementById("nombre").value = filaActual.children[0].innerText;
-      document.getElementById("email").value = filaActual.children[1].innerText;
-      document.getElementById("telefono").value = filaActual.children[2].innerText;
+      document.getElementById("formEditar").style.display = "block";
+      document.getElementById("formAgregar").style.display = "none";
+    }
 
-      document.getElementById("formulario").style.display = "block";
+    function guardarCambios() {
+      if (filaEditando) {
+        filaEditando.children[0].textContent = document.getElementById("editNombre").value;
+        filaEditando.children[1].textContent = document.getElementById("editEmail").value;
+        filaEditando.children[2].textContent = document.getElementById("editTelefono").value;
+
+        filaEditando = null;
+        document.getElementById("formEditar").style.display = "none";
+      }
     }
 
     function agregarAmigo() {
-      filaActual = null;
-      modo = "agregar";
-
-      document.getElementById("tituloForm").innerText = "Agregar Amigo";
-
-      document.getElementById("nombre").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("telefono").value = "";
-
-      document.getElementById("formulario").style.display = "block";
+      document.getElementById("formAgregar").style.display = "block";
+      document.getElementById("formEditar").style.display = "none";
     }
 
-    function guardar() {
-      const nombre = document.getElementById("nombre").value;
-      const email = document.getElementById("email").value;
-      const telefono = document.getElementById("telefono").value;
+    function agregarNuevo() {
+      const nombre = document.getElementById("addNombre").value;
+      const email = document.getElementById("addEmail").value;
+      const tel = document.getElementById("addTelefono").value;
 
-      if (modo === "editar" && filaActual) {
-        filaActual.children[0].innerText = nombre;
-        filaActual.children[1].innerText = email;
-        filaActual.children[2].innerText = telefono;
+      if (nombre.trim() === "" || email.trim() === "" || tel.trim() === "") {
+        alert("Completa todos los campos.");
+        return;
       }
 
-      if (modo === "agregar") {
-        const tabla = document.getElementById("tablaUsuarios").querySelector("tbody");
+      const tabla = document.getElementById("tablaUsuarios").querySelector("tbody");
 
-        const nuevaFila = document.createElement("tr");
-        nuevaFila.innerHTML = `
+      const nuevaFila = `
+        <tr>
           <td>${nombre}</td>
           <td>${email}</td>
-          <td>${telefono}</td>
+          <td>${tel}</td>
           <td class="acciones">
             <button onclick="editarUsuario(this)">✏️</button>
             <button onclick="agregarAmigo()">➕</button>
           </td>
-        `;
+        </tr>
+      `;
 
-        tabla.appendChild(nuevaFila);
-      }
+      tabla.insertAdjacentHTML("beforeend", nuevaFila);
 
-      document.getElementById("formulario").style.display = "none";
+      document.getElementById("formAgregar").reset;
+      document.getElementById("formAgregar").style.display = "none";
     }
   </script>
 
