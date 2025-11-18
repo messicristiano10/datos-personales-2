@@ -11,7 +11,7 @@ Este sitio web fue desarrollado como trabajo práctico y contiene las siguientes
 | MejoresAmigos.html | Lista de mejores amigos |
 | ComidasPreferidas.html | Tabla de comidas preferidas |
 | login.html | Página de inicio de sesión |
-| ListarUsuario.html | Página para listar usuarios |
+| ListarUsuario.html |Página que permite listar, agregar y editar usuarios mediante formularios dinámicos |
 | styles.css | Archivo de estilos básicos |
 
 ---
