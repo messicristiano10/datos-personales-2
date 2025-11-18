@@ -44,7 +44,7 @@
 
 <h1>Lista de Usuarios</h1>
 
-<button id="nuevoUsuarioBtn">➕ Agregar Amigo</button>
+<button id="nuevoUsuarioBtn" onclick="agregarAmigo()">➕ Agregar Amigo</button>
 
 <table>
   <thead>
@@ -75,7 +75,7 @@ let usuarios = [
   { nombre: "Juan Pérez", email: "juanperez@example.com", telefono: "+54 11 1234-5678" },
 ];
 
-let editando = -1; // índice del usuario que se está editando
+let editando = -1;
 
 // Mostrar usuarios en la tabla
 function render() {
@@ -92,8 +92,7 @@ function render() {
           <button onclick="editar(${i})">✏️</button>
           <button onclick="agregarAmigo()">➕</button>
         </td>
-      </tr>
-    `;
+      </tr>`;
   });
 }
 
@@ -121,13 +120,17 @@ function guardarCambios() {
   let telefono = document.getElementById("telefono").value;
 
   if (editando === -1) {
-    usuarios.push({ nombre, email, telefono });  // agregar nuevo
+    usuarios.push({ nombre, email, telefono });
   } else {
-    usuarios[editando] = { nombre, email, telefono }; // editar existente
+    usuarios[editando] = { nombre, email, telefono };
   }
 
+  // Ocultar formulario y volver a renderizar
   document.getElementById("formulario").style.display = "none";
   render();
+
+  // ▶️ Redirección a index.html
+  window.location.href = "index.html";
 }
 
 // Inicializar tabla
